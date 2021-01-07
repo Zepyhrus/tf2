@@ -76,7 +76,7 @@ if __name__ == "__main__":
   estimator = tf.estimator.Estimator(
     model_fn=my_model,
     model_dir='./myestimatormode',
-    params={'learning_rate': 0.1},
+    params={'learning_rate': 0.01},
     config=tf.estimator.RunConfig(session_config=session_config)
   )
 
@@ -86,6 +86,24 @@ if __name__ == "__main__":
   )
 
   tf.compat.v1.logging.info('Finished!')
+
+  # warm start
+  warm_start_from = tf.estimator.WarmStartSettings(
+    ckpt_to_initialize_from='./myestimatormode',
+  )
+
+  estimator2 = tf.estimator.Estimator(
+    model_fn=my_model,
+    model_dir='./myestimatormode2',
+    warm_start_from=warm_start_from,
+    params={'learning_rate': 0.1},
+    config=tf.estimator.RunConfig(session_config=session_config)
+  )
+
+  estimator2.train(
+    lambda: train_input_fn(train_data=train_data, batch_size=batch_size),
+    steps=200
+  )
 
 
 
