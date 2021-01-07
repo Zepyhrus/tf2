@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 plt.rcParams['figure.autolayout'] = True
 
 
+from utils import moving_average
+
+
 if __name__ == "__main__":
   print(tf.__version__)
 
@@ -42,7 +45,7 @@ if __name__ == "__main__":
   init = tf.compat.v1.global_variables_initializer()
 
   # learning parameters
-  training_epochs = 20
+  training_epochs = 30
   display_step = 2
 
   savedir = 'log/'
@@ -53,12 +56,7 @@ if __name__ == "__main__":
 
   plotdata = { 'batchsize': [], 'loss': [] }
 
-  def moving_average(a, w=10):
-    if len(a) < w:
-      return a[:]
-    
-    return [val if idx < w else sum(a[(idx-w):idx])/w for idx, val in enumerate(a)]
-
+  
   # Train model
   with tf.compat.v1.Session() as sess:
     sess.run(init)
