@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 tf.compat.v1.disable_v2_behavior()
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
 # generate simulation data in memory
 def generate_data(datasize=100):
@@ -67,7 +68,7 @@ if __name__ == "__main__":
   batch_size = 10
 
   tf.compat.v1.reset_default_graph()  # clear all tensors in the graph
-  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+  
 
   gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.667)
   session_config = tf.compat.v1.ConfigProto(gpu_options=gpu_options)
