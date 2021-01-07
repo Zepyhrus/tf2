@@ -27,7 +27,7 @@ if __name__ == "__main__":
   container = variable_scope.EagerVariableStore()
 
   learning_rate = 0.01
-  optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=learning_rate)
+  optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=learning_rate)
 
   def get_cost(x, y):
     # forward
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     return tape.gradient(loss_value, container.trainable_variables())
 
   
-  training_steps = 2000  # 2000 steps, should change according to batchsize
+  training_steps = 2000  # steps should change according to batchsize
   display_step = 100
 
   for step, value in enumerate(dataset):
@@ -59,10 +59,10 @@ if __name__ == "__main__":
     if step >= training_steps:
       break
 
-    if step % display_step == 0:
+    if (step+1) % display_step == 0:
       cost = get_cost(value[0], value[1])
 
-      print('step:', step+1, 'cost=', cost.numpy())
+      print('step:', step, 'cost=', cost.numpy())
   
   print('Finished!')
   print('cost=', cost.numpy())
