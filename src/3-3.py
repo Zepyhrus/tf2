@@ -21,6 +21,7 @@ def train_input_fn(train_data, batch_size):
 
   return dataset
 
+
 def eval_input_fn(data, labels, batch_size):
   # generate evaluation dataset
   assert batch_size, 'batch_size must not be None'
@@ -31,6 +32,7 @@ def eval_input_fn(data, labels, batch_size):
   dataset = dataset.batch(batch_size)
 
   return dataset
+
 
 def my_model(features, labels, mode, params):
   # define model
@@ -70,6 +72,7 @@ if __name__ == "__main__":
   tf.compat.v1.reset_default_graph()  # clear all tensors in the graph
   
 
+  # train model
   gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.667)
   session_config = tf.compat.v1.ConfigProto(gpu_options=gpu_options)
 
@@ -105,10 +108,28 @@ if __name__ == "__main__":
     steps=200
   )
 
+  # evaluation on test dataset
+  test_input_fn = tf.compat.v1.estimator.inputs.numpy_input_fn(
+    test_data[0], test_data[1], batch_size=1, shuffle=True
+  )
 
+  train_metrics = estimator2.evaluate(input_fn=test_input_fn)
+  print('train_metrics', train_metrics)
 
+  # predict
+  predictions = estimator2.predict(
+    input_fn=lambda: eval_input_fn(test_data[0], None, batch_size)
+  )
+  print('predictions', list(predictions))
 
-
+  # define input
+  new_samples = np.array( [6.4, 3.2, 4.5, 1.5], dtype=np.float32 )
+  predict_input_fn = tf.compat.v1.estimator.inputs.numpy_input_fn(
+    new_samples, num_epochs=1, batch_size=1, shuffle=False
+  )
+  predictions = list(estimator2.predict(input_fn=predict_input_fn))
+  print(f'input, res: {new_samples} {predictions}')
+  
 
 
 
