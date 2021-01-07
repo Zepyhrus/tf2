@@ -4,8 +4,12 @@ import matplotlib.pyplot as plt
 plt.rcParams['figure.autolayout'] = True
 
 
-from utils import moving_average
+tf.compat.v1.reset_default_graph()
 
+def my_py_func(X, W, b):
+  z = tf.multiply(X, W) + b
+
+  return z
 
 if __name__ == "__main__":
   print(tf.__version__)
@@ -24,8 +28,8 @@ if __name__ == "__main__":
   W = tf.Variable(tf.compat.v1.random_normal([1]), name='weight')
   b = tf.Variable(tf.zeros([1]), name='bias')
 
-  # forward
-  z = tf.multiply(X, W) + b
+  # forward, first place that differs 2-1
+  z = tf.py_function(my_py_func, [X, W, b], tf.float32) # static to dynamic
 
   # backward
   global_step = tf.Variable(0, name='global_step', trainable=False)
@@ -81,17 +85,14 @@ if __name__ == "__main__":
     print('cost=', sess.run(cost, feed_dict={X: train_X, Y: train_Y}), 'W=', sess.run(W), 'b=', sess.run(b))
 
     # show model
-    plt.figure(1)
-    plt.plot(train_X, train_Y, 'ro', label='Original data')
-    plt.plot(train_X, sess.run(W) * train_X + sess.run(b), label='Fitted line')
     
-    plt.legend()
     
-    plotdata['avgloss'] = moving_average(plotdata['loss'])
-    plt.figure(2)
+    
+    plt.figure()
     plt.subplot(211)
-    plt.plot(plotdata['batchsize'], plotdata['avgloss'], 'b--')
-    plt.title('Minibatch run vs.Training loss')
+    plt.plot(train_X, train_Y, 'ro', label='Original data')
+    v = sess.run(z, feed_dict={X: train_X})
+    plt.plot(train_X, v, label='Fitted line')
     
     plt.subplot(212)
     plt.plot(plotdata['batchsize'], plotdata['loss'])

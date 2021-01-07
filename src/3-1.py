@@ -19,7 +19,7 @@ if __name__ == "__main__":
       np.reshape(train_Y, [-1, 1])
     )
   )
-  dataset = dataset.repeat().batch(1)
+  dataset = dataset.repeat().batch(5)
 
   # preparation
   global_step = tf.compat.v1.train.get_or_create_global_step()
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     return tape.gradient(loss_value, container.trainable_variables())
 
   
-  training_steps = 2000  # 20 epochs, 10 epochs garantees no convergences
+  training_steps = 2000  # 2000 steps, should change according to batchsize
   display_step = 100
 
   for step, value in enumerate(dataset):
