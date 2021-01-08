@@ -78,57 +78,23 @@ if __name__ == "__main__":
 
   estimator = tf.estimator.Estimator(
     model_fn=my_model,
-    model_dir='./myestimatormode',
+    model_dir='./myestimatormode3',
     params={'learning_rate': 0.01},
-    config=tf.estimator.RunConfig(session_config=session_config)
-  )
+    config=tf.estimator.RunConfig(session_config=session_config))
 
-  estimator.train(
-    lambda: train_input_fn(train_data=train_data, batch_size=batch_size),
-    steps=200
-  )
+  train_spec = tf.estimator.TrainSpec(
+    input_fn=lambda: train_input_fn(train_data, batch_size),
+    max_steps=1000)
+  
+  eval_spec = tf.estimator.EvalSpec(
+    input_fn=lambda: eval_input_fn(test_data, None, batch_size))
 
-  tf.compat.v1.logging.info('Finished!')
+  tf.estimator.train_and_evaluate(
+    estimator=estimator, train_spec=train_spec, eval_spec=eval_spec)
+  
 
-  # warm start
-  warm_start_from = tf.estimator.WarmStartSettings(
-    ckpt_to_initialize_from='./myestimatormode',
-  )
 
-  estimator2 = tf.estimator.Estimator(
-    model_fn=my_model,
-    model_dir='./myestimatormode2',
-    warm_start_from=warm_start_from,
-    params={'learning_rate': 0.1},
-    config=tf.estimator.RunConfig(session_config=session_config)
-  )
-
-  estimator2.train(
-    lambda: train_input_fn(train_data=train_data, batch_size=batch_size),
-    steps=200
-  )
-
-  # evaluation on test dataset
-  test_input_fn = tf.compat.v1.estimator.inputs.numpy_input_fn(
-    test_data[0], test_data[1], batch_size=1, shuffle=True
-  )
-
-  train_metrics = estimator2.evaluate(input_fn=test_input_fn)
-  print('train_metrics', train_metrics)
-
-  # predict
-  predictions = estimator2.predict(
-    input_fn=lambda: eval_input_fn(test_data[0], None, batch_size)
-  )
-  print('predictions', list(predictions))
-
-  # define input
-  new_samples = np.array( [6.4, 3.2, 4.5, 1.5], dtype=np.float32 )
-  predict_input_fn = tf.compat.v1.estimator.inputs.numpy_input_fn(
-    new_samples, num_epochs=1, batch_size=1, shuffle=False
-  )
-  predictions = list(estimator2.predict(input_fn=predict_input_fn))
-  print(f'input, res: {new_samples} {predictions}')
+  
   
 
 
