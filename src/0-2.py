@@ -2,7 +2,7 @@ import tensorflow_datasets as tfds
 
 
 if __name__ == "__main__":
-  # print(tfds.list_builders())
+  print(tfds.list_builders())
 
   # load datasets 
   ds_train, ds_test = tfds.load(name='mnist', split=['train', 'test'])
