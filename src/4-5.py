@@ -53,17 +53,58 @@ def make_tfrec(filenames, labels, target):
   writer.close()
 
 
+def read_and_decode(filenames, flag='train', batch_size=3):
+  if flag == 'train':
+    filename_queue = tf.compat.v1.train.string_input_producer(filenames)
+  else:
+    filename_queue = tf.compat.v1.train.string_input_producer(
+      filenames, num_epochs=1, shuffle=False
+    )
+
+  reader = tf.compat.v1.TFRecordReader()
+  _, serialized_example = reader.read(filename_queue)
+
+  features = tf.io.parse_example(
+    serialized=serialized_example,
+    features={
+      'label': tf.io.FixedLenFeature([], tf.int64),
+      'img_raw': tf.io.FixedLenFeature([], tf.string)
+    }
+  )
+  # 
+  image = tf.io.decode_raw(features['img_raw'], tf.uint8)
+  image = tf.reshape(image, [256, 256, 3])
+
+  label = tf.cast(features['label'], tf.int32)
+
+  if flag == 'train':
+    image = tf.cast(image, tf.float32) * (1. / 255) - 0.5
+    img_batch, label_batch = tf.compat.v1.train.batch(
+      [image, label], batch_size=batch_size, capacity=20
+    )
+
+    return img_batch, label_batch
+  return image, label
+
 if __name__ == "__main__":
-  directory = 'data/mnist/'
+  directory = 'data/mnist/test'
 
   (filenames, labels), _ = load_sample(directory, shuffle=False)
 
   print(filenames[:2], labels[:2], _)
 
-  target = 'data/mnist.tfrecords'
+  target = 'data/mnist_test.tfrecords'
 
-  make_tfrec(filenames, labels, target)
+  # make_tfrec(filenames, labels, target)
 
+  image, label = read_and_decode([target], flag='test')
 
+  # save image to file system
+  save_path = 'show/'
 
+  if tf.io.gfile.exists(save_path):
+    tf.io.gfile.rmtree(save_path)
+  tf.io.gfile.makedirs(save_path)
+
+  
 

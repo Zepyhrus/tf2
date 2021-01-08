@@ -130,6 +130,5 @@ dmypy.json
 
 # custom added by sherk
 log/
-logeager/
-myestimatormode*/
 data/
+show/
