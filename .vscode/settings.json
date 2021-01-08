@@ -5,6 +5,7 @@
     "**/.git/subtree-cache/**": true,
     "**/node_modules/**": true,
     "**/.hg/store/**": true,
-    "**/data/**": true
+    "**/data/**": true,
+    "**/show/**": true
   }
 }

@@ -1,4 +1,6 @@
 import os
+from os.path import join, split, basename
+
 import tensorflow as tf
 from PIL import Image
 from sklearn.utils import shuffle
@@ -73,7 +75,7 @@ def read_and_decode(filenames, flag='train', batch_size=3):
   )
   # 
   image = tf.io.decode_raw(features['img_raw'], tf.uint8)
-  image = tf.reshape(image, [256, 256, 3])
+  image = tf.reshape(image, [28, 28])
 
   label = tf.cast(features['label'], tf.int32)
 
@@ -106,5 +108,32 @@ if __name__ == "__main__":
     tf.io.gfile.rmtree(save_path)
   tf.io.gfile.makedirs(save_path)
 
-  
+  with tf.compat.v1.Session() as sess:
+    sess.run(tf.compat.v1.local_variables_initializer())  # initialize
+
+    coord = tf.train.Coordinator()  # 
+    threads = tf.compat.v1.train.start_queue_runners(coord=coord)
+    myset = set([])
+
+    try:
+      i = 0
+      while True:
+        example, examplelab = sess.run([image, label])
+        examplelab = str(examplelab)
+
+        if examplelab not in myset:
+          myset.add(examplelab)
+          tf.io.gfile.makedirs(join(save_path, examplelab))
+        
+        img = Image.fromarray(example)
+        img.save(join(save_path, examplelab, f'{i}.jpg'))
+        print(i)
+        i += 1
+    except tf.errors.OutOfRangeError:
+      print('Done Test -- epoch limit reached')
+    finally:
+      coord.request_stop()
+      coord.join(threads)
+
+      print('Stopped')
 
