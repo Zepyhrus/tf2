@@ -2,3 +2,4 @@ tensorflow-gpu==2.3
 tensorflow-datasets
 sklearn
 matplotlib
+tqdm
