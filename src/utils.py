@@ -51,12 +51,10 @@ def load_sample(sample_dir, shuffleflag=True):
 
   labels = [labdict[i] for i in labelsnames]
 
-  idx = list(range(len(labels)))
-
   if shuffleflag:
-    random.shuffle(idx)
+    lfilenames, labels = shuffle(lfilenames, labels)
 
-  return (np.asarray(lfilenames)[idx], np.asarray(labels)[idx]), np.asarray(lab)
+  return (np.asarray(lfilenames), np.asarray(labels)), np.asarray(lab)
 
 
 def show_result(subplot, title, thisimg):
