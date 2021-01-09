@@ -104,7 +104,7 @@ def dataset(directory, size, batch_size, random_rotated=False):
 
 
 if __name__ == "__main__":
-  sample_dir = 'data/mnist/train'
+  sample_dir = 'data\\mnist'
   size = [28, 28]
   batch_size = 10
   tdataset = dataset(sample_dir, size, batch_size)
@@ -120,8 +120,7 @@ if __name__ == "__main__":
     sess.run(tf.compat.v1.global_variables_initializer())
 
     try:
-      for step in range(10):
-        value = sess.run(one_element1)
+      for step in range(1):
         value2 = sess.run(one_element2)
 
         show_img(step, value2[1], np.asarray(value2[0] * 255, np.uint8), 10)
