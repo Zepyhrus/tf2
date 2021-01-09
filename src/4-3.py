@@ -5,28 +5,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.utils import shuffle
 
+from utils import load_sample
+
 tf.compat.v1.disable_v2_behavior()
 
-
-def load_sample(sample_dir):
-  print('loading sample dataset..')
-  
-  lfilenames = []
-  labelsnames = []
-
-  for dirpath, dirname, filenames in os.walk(sample_dir):
-    for filename in filenames:
-      filename_path = os.sep.join([dirpath, filename])
-      
-      lfilenames.append(filename_path)
-      labelsnames.append( dirpath.split('/')[-1] )
-
-  lab = list(sorted(set(labelsnames)))
-  labdict = dict(zip( lab, list(range(len(lab))) ))
-
-  labels = [labdict[i] for i in labelsnames]
-
-  return shuffle((np.asarray(lfilenames), np.asarray(labels))), np.asarray(lab)
 
 
 def get_batches(image, label, resize_w, resize_h, channels, batch_size):

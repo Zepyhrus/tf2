@@ -7,32 +7,9 @@ from sklearn.utils import shuffle
 import numpy as np
 from tqdm import tqdm
 
+from utils import load_sample
+
 tf.compat.v1.disable_v2_behavior()
-
-def load_sample(sample_dir, shuffle=True):
-  print('loading sample dataset..')
-  
-  lfilenames = []
-  labelsnames = []
-
-  for dirpath, dirname, filenames in os.walk(sample_dir):
-    for filename in filenames:
-      filename_path = os.sep.join([dirpath, filename])
-      
-      lfilenames.append(filename_path)
-      labelsnames.append( dirpath.split('/')[-1] )
-
-  lab = list(sorted(set(labelsnames)))
-  labdict = dict(zip( lab, list(range(len(lab))) ))
-
-  labels = [labdict[i] for i in labelsnames]
-
-  if shuffle:
-    return shuffle(
-      (np.asarray(lfilenames), np.asarray(labels))
-    ), np.asarray(lab)
-  else:
-    return (np.asarray(lfilenames), np.asarray(labels)), np.asarray(lab)
 
 
 def make_tfrec(filenames, labels, target):
