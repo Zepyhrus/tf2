@@ -63,6 +63,7 @@ def show_result(subplot, title, thisimg):
   p.imshow(thisimg)
   p.set_title(title)
 
+
 def show_img(index, label, img, ntop):
   plt.figure(figsize=(12, 6))
   plt.axis('off')
