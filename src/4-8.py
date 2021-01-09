@@ -1,7 +1,11 @@
 import tensorflow as tf
 import numpy as np
 
+from utils import get_one
+
 tf.compat.v1.disable_v2_behavior()
+
+
 
 def generate_data(data_size=100):
   train_X = np.linspace(-data_size/100, data_size/100, data_size)
@@ -10,12 +14,7 @@ def generate_data(data_size=100):
   return train_X, train_Y
 
 
-def get_one(dataset):
-  iterator = tf.compat.v1.data.make_one_shot_iterator(dataset)
 
-  one_element = iterator.get_next()
-
-  return one_element
 
 
 if __name__ == "__main__":

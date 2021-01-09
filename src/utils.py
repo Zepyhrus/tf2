@@ -18,3 +18,11 @@ def moving_average(a, w=10):
     return a[:]
   
   return [val if idx < w else sum(a[(idx-w):idx])/w for idx, val in enumerate(a)]
+
+
+def get_one(dataset):
+  iterator = tf.compat.v1.data.make_one_shot_iterator(dataset)
+
+  one_element = iterator.get_next()
+
+  return one_element
