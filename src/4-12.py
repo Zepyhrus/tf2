@@ -96,10 +96,10 @@ def dataset(directory, size, batch_size, random_rotated=False):
 
 
 if __name__ == "__main__":
-  save_dir = 'data\\mnist'
+  save_dir = 'data/mnist'
   (filenames, labels), lab = load_sample(save_dir, shuffleflag=True)
   
-  size = [96, 96]
+  size = [28, 28]
   batch_size = 10
 
   tdataset2 = dataset(save_dir, size, batch_size, True)
